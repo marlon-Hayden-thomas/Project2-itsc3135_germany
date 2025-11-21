@@ -1,8 +1,8 @@
-
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useLanguage } from "../context/LanguageContext.jsx";
 import CommentBox from "../components/CommentBox.jsx";
+import familyPhoto from "../family.jpg";
 
 const posts = [
   {
@@ -27,6 +27,19 @@ const posts = [
       de: "Deutschland ist für Ingenieurskunst und Forschung bekannt. Dieser Beitrag spricht über moderne Technologien und spannende Projekte.",
     },
   },
+  {
+  id: 3,
+  title: {
+    en: "Christmas in Germany with my family",
+    de: "Weihnachten in Deutschland mit meiner Familie",
+  },
+  body: {
+    en: "This Christmas I am especially grateful for my family. I love my mom, my sister, my auntie, and my cousin so much. Spending time with them in Germany feels really special. I cannot wait to laugh with them, eat good food together, and make new memories that we will talk about for years.❤️🇩🇪",
+    de: "Dieses Weihnachten bin ich meiner Familie besonders dankbar. Ich liebe meine Mutter, meine Schwester, meine Tante und meinen Cousin sehr. Die Zeit mit ihnen in Deutschland zu verbringen, fühlt sich etwas ganz Besonderes an. Ich kann es kaum erwarten, mit ihnen zu lachen, gemeinsam gutes Essen zu genießen und neue Erinnerungen zu schaffen, über die wir noch jahrelang reden werden.❤️🇩🇪",
+  },
+  image: familyPhoto,
+},
+
 ];
 
 export default function BlogPage() {
@@ -66,6 +79,15 @@ export default function BlogPage() {
           return (
             <article key={post.id} className="post-card">
               <h2 className="post-title">{title}</h2>
+
+              {post.image && (
+                <img
+                  src={post.image}
+                  alt="Marlon with family in a restaurant"
+                  className="post-image"
+                />
+              )}
+
               <p className="post-body">{body}</p>
 
               <h3 className="comments-heading">{t("blogCommentsHeading")}</h3>
