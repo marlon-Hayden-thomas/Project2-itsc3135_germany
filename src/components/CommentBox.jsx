@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext.jsx";
@@ -8,8 +7,11 @@ export default function CommentBox({ isAuthenticated, onAddComment }) {
   const [touched, setTouched] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
   const [translateError, setTranslateError] = useState("");
-  const { lang, t, translateComment } = useLanguage();
 
+  // Only take lang + t from context
+  const { lang, t } = useLanguage();
+
+  // If user is not logged in, show locked message
   if (!isAuthenticated) {
     return (
       <p className="comment-locked">
@@ -22,16 +24,45 @@ export default function CommentBox({ isAuthenticated, onAddComment }) {
     );
   }
 
+  // Local helper that hits your Express + OpenAI backend
+  async function translateComment(text, sourceLang, targetLang) {
+    try {
+      const response = await fetch("http://localhost:3001/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text,
+          sourceLang,
+          targetLang,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Translation server error:", data.error);
+        return text; // fallback to original
+      }
+
+      return data.translatedText || text;
+    } catch (error) {
+      console.error("Translation request failed:", error);
+      return text; // fallback to original
+    }
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     setTouched(true);
     setTranslateError("");
+
     const trimmed = text.trim();
     if (!trimmed) {
       return;
     }
 
-    const fromLang = lang;
+    // Current UI language
+    const fromLang = lang; // "en" or "de"
     const toLang = lang === "de" ? "en" : "de";
 
     setIsTranslating(true);
