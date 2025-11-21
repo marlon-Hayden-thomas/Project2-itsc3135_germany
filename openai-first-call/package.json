@@ -1,0 +1,9 @@
+
+{
+  "name": "openai-first-call",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "openai": "^4.67.0"
+  }
+}
